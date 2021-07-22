@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  web:
+  ticker-nginx:
     image: nginx:stable-alpine
-    container_name: nginx
+    container_name: ticker-nginx
     ports:
       - "80:80"
       - "443:443"
@@ -12,14 +12,14 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     #      -  /mnt/data/certs:/etc/nginx/certs
     depends_on:
-      - php
+      - ticker-php
     networks:
       - tickernet
 
-  mysql:
+  ticker-mysql:
     image: mysql:5.7.29
     hostname: mysql_server
-    container_name: mysql
+    container_name: ticker-mysql
     restart: unless-stopped
     tty: true
     ports:
@@ -36,11 +36,11 @@ services:
     volumes:
       - ./sqldata:/var/lib/mysql
 
-  php:
+  ticker-php:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: php
+    container_name: ticker-php
     volumes:
       - ./:/var/www/html/app
     ports:

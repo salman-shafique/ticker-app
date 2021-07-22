@@ -3,7 +3,7 @@
 /public/storage
 /storage/*.key
 /vendor
-./sqldata/
+/sqldata
 .idea/
 .env
 .env.backup
