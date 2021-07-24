@@ -8,7 +8,6 @@ use App\Traits\ResponseMapper;
 use App\Services\UserService;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -22,7 +21,7 @@ class AuthController extends Controller
     }
 
     /**
-     * @OA\Post(path="/api/register",
+     * @OA\Post(path="/api/v1/register",
      *   tags={"Authentication"},
      *   summary="Register user",
      *   description="This can only be done by guest user.",
@@ -49,9 +48,9 @@ class AuthController extends Controller
      *             )
      *         )
      *   ),
-     *   @OA\Response(response=400, description="Bad request"),
-     *   @OA\Response(response=500, description="Eexception"),
-     *   @OA\Response(response=200, description="successful operation")
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Eexception", @OA\JsonContent()),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent())
      * )
      */
     public function register(Request $request)
@@ -63,18 +62,16 @@ class AuthController extends Controller
             }
             $params = $request->all();
             $user = $this->userService->registerUser($params);
-            $this->message = __('messages.register_success');
-            $this->payload = $this->userService->getAccessToken($user);
-
-        } catch (Exception $ex) {
-            $this->setResponseData($ex->getMessage(), $ex->getMessage(), 500);
+            $this->setResponseData($this->userService->getAccessToken($user), 201);
+        } catch (Exception $exception) {
+            $this->setErrorResponseData(500, $exception->getMessage(), 500);
         } finally {
             return $this->sendJsonResponse();
         }
     }
 
     /**
-     * @OA\Post(path="/api/login",
+     * @OA\Post(path="/api/v1/login",
      *   tags={"Authentication"},
      *   summary="Login user",
      *   description="This can only be done by guest user.",
@@ -94,9 +91,9 @@ class AuthController extends Controller
      *             )
      *         )
      *   ),
-     *   @OA\Response(response=400, description="Bad request"),
-     *   @OA\Response(response=500, description="Eexception"),
-     *   @OA\Response(response=200, description="successful operation")
+     *   @OA\Response(response=400, description="Bad request", @OA\JsonContent()),
+     *   @OA\Response(response=500, description="Eexception", @OA\JsonContent()),
+     *   @OA\Response(response=200, description="successful operation", @OA\JsonContent())
      * )
      */
     public function login(Request $request)
@@ -111,23 +108,12 @@ class AuthController extends Controller
                 $this->payload = $this->userService->getAccessToken($user, $token);
                 return;
             }
-            $this->setResponseData(__('messages.invalid_login'), __('messages.invalid_login'), 403);
+            $this->setErrorResponseData(__('validation.error_code.invalid_credentials'), __('messages.invalid_credentials'), 401);
         } catch (Exception $exception) {
-            $this->setResponseData($exception->getMessage(), $exception->getMessage(), 500);
+            $this->setErrorResponseData(500, $exception->getMessage(), 500);
         } finally {
             return $this->sendJsonResponse();
         }
     }
 
-
-    public function self()
-    {
-        try {
-            $this->payload = auth()->user();
-        } catch (Exception $exception) {
-            $this->setResponseData($exception->getMessage(), $exception->getMessage(), 500);
-        } finally {
-            return $this->sendJsonResponse();
-        }
-    }
 }

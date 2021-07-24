@@ -13,5 +13,6 @@ return [
     |
     */
 
-    'register_success' => 'User registered successfully'
+    'register_success' => 'User registered successfully.',
+    'invalid_credentials' => 'Email and password did not match.',
 ];

@@ -12,6 +12,7 @@ trait ResponseMapper
     protected $payload = null;
     protected $message = null;
     protected $responseCode = null;
+    protected $errorCode = null;
 
     /**
      * @param $data
@@ -29,22 +30,21 @@ trait ResponseMapper
         ];
     }
 
-    public function setResponseData($message = null, $error = null, $responseCode = null)
+    public function setResponseData($payload = [], $responseCode = null)
     {
-        $this->message = $message;
-        $this->error = $error;
+        $this->payload = $payload;
+        $this->responseCode = $responseCode;
+    }
+
+    public function setErrorResponseData($errorCode = null, $message = null, $responseCode = null)
+    {
+        $this->payload = ['error' => (int)$errorCode, "error_message" => $message, 'timestamp' => now()->timestamp];
         $this->responseCode = $responseCode;
     }
 
     public function sendJsonResponse()
     {
         $this->responseCode = empty($this->responseCode) ? 200 : $this->responseCode;
-
-        return response()->json([
-            'success' => $this->responseCode == 200 ? true : false,
-            'message' => $this->message,
-            'data' => $this->payload,
-            'error' => $this->error,
-        ], $this->responseCode);
+        return response()->json($this->payload, $this->responseCode);
     }
 }

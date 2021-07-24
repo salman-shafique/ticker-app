@@ -13,8 +13,10 @@ trait ApiValidation
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
+
+
         if ($validator->fails()) {
-            $this->setResponseData("validation error", $validator->errors()->toArray(), 403);
+            $this->setErrorResponseData(__("validation.error_code.{$validator->errors()->keys()[0]}" ?? 0), $validator->errors()->first(), 422);
             return false;
         }
         return true;
@@ -23,12 +25,12 @@ trait ApiValidation
     public function validateRegister()
     {
         $validator = validator(request()->all(), [
-            'name' => ['nullable', 'string'],
+            'name' => ['required', 'string'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
         ]);
         if ($validator->fails()) {
-            $this->setResponseData("validation error", $validator->errors()->toArray(), 403);
+            $this->setErrorResponseData(__("validation.error_code.{$validator->errors()->keys()[0]}" ?? 0), $validator->errors()->first(), 422);
 
             return false;
         }

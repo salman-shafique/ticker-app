@@ -147,5 +147,13 @@ return [
     */
 
     'attributes' => [],
-
+    'error_code' => [
+        // Params error codes
+        'name' => '100',
+        'email' => '101',
+        'password' => '102',
+        // action error codes
+        'invalid_credentials' => '110',
+        'coin_not_found' => '111',
+    ],
 ];
