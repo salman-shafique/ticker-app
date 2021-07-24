@@ -27,7 +27,11 @@ $ git clone <repo_url>
 $ # create .env file and set DB passwords and other environment variables
 $ cp .env.example .env
 $ # Spin up the docker, add -d arg at end to run in background
-$ docker-compose up --build 
+$ docker-compose up --build
+$ # after Build is successful, Open new Terminal to install composer and migrations etc
+$ docker exec -it ticker-php composer install
+$ docker exec -it ticker-php cp .env.example .env
+$ docker exec -it ticker-php php artisan migrate
 $ # Access the application in browser: http://localhost or server IP
 ```
 

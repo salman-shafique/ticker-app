@@ -39,7 +39,7 @@ RUN useradd -u 1000 -ms /bin/bash -g www www
 # Copy existing application directory contents
 COPY ./ /var/www/html/app
 # install dependencies
-RUN cd /var/www/html/app && composer install && php artisan migrate --no-interaction
+RUN cd /var/www/html/app && composer install
 # Create SQLlite for test cases
 RUN  cd /var/www/html/app/database && touch test.sqlite
 # Copy existing application directory permissions
