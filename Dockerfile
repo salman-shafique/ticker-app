@@ -40,6 +40,8 @@ RUN useradd -u 1000 -ms /bin/bash -g www www
 COPY ./ /var/www/html/app
 # install dependencies
 RUN cd /var/www/html/app && composer install
+# Create SQLlite for test cases
+RUN  cd /var/www/html/app/database && touch test.sqlite
 # Copy existing application directory permissions
 COPY --chown=www:www ./app /var/www/html/app
 

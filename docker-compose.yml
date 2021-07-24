@@ -47,6 +47,13 @@ services:
       - "9000:9000"
     networks:
       - tickernet
+  ticker-redis:
+    image: redis:4.0
+    container_name: ticker-redis
+    ports:
+      - "6382:6379"
+    networks:
+      - tickernet
 networks:
   tickernet:
     external: true
